@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Links every skill and command in this repo into one or more Claude Code config dirs.
+# Links every skill, agent and command in this repo into one or more Claude Code config dirs.
 # Usage: ./install.sh [config-dir ...]   (default: $CLAUDE_CONFIG_DIR, else ~/.claude)
 set -euo pipefail
 
@@ -27,10 +27,13 @@ link() {
 for dir in "$@"; do
   echo "$dir"
   # skills/ is often itself a symlink shared between accounts; -p follows it.
-  mkdir -p "$dir/skills" "$dir/commands"
+  mkdir -p "$dir/skills" "$dir/agents" "$dir/commands"
   for s in "$repo"/skills/*/; do
     s="${s%/}"
     link "$s" "$dir/skills/$(basename "$s")"
+  done
+  for a in "$repo"/agents/*.md; do
+    link "$a" "$dir/agents/$(basename "$a")"
   done
   for c in "$repo"/commands/*.md; do
     link "$c" "$dir/commands/$(basename "$c")"
